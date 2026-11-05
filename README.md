@@ -54,7 +54,7 @@ theorem Erdos195Depth2.main_result :
 Checks run on this repository:
 
 - Lean `v4.35.0`, Mathlib `v4.35.0`. `lake build` succeeds. The only warnings are the two `sorry`s in `Challenge.lean`.
-- No `sorry`, `admit`, `native_decide`, `decide`, `implemented_by` or `axiom` in the Lean files outside `Challenge.lean` (checked with `grep`).
+- No `sorry`, `admit`, `native_decide`, `decide`, `implemented_by` or `axiom` in the Lean files outside `Challenge.lean` and the audit file `checks/fidelity.lean` (checked with `grep`).
 - Both theorems depend only on `propext`, `Classical.choice` and `Quot.sound` (`#print axioms`).
 - The statements in `Challenge.lean` and `Solution.lean` elaborate to byte-identical terms under `set_option pp.all true`.
 - `scripts/check-lean-sources.py` and `scripts/validate-formalization.rb` from the [Palomar template](https://github.com/PalomarRegistry/PalomarTemplate) (commit `2891de4`) pass. The scripts are not vendored here; copy them from the template to rerun them.
@@ -67,6 +67,10 @@ To build:
 lake exe cache get   # download Mathlib build files
 lake build
 ```
+
+## Reproducing the checks
+
+After `lake build`, run `lake env lean checks/fidelity.lean` from the repository root. The file copies formal-conjectures' `List.IsAPOfLengthWith`, `List.IsAPOfLength` and `HasMonotoneAP` verbatim from commit [`5d8b04d3`](https://github.com/google-deepmind/formal-conjectures/blob/5d8b04d3d41b745cc3f2f3cdd5ed04b60c500983/FormalConjecturesForMathlib/Combinatorics/AP/Basic.lean), defines `HasMonotoneAPNot4` (`HasMonotoneAP` restricted to differences not divisible by 4), and proves the restatement `fc_form : ∃ f : ℕ ≃ ℤ, ¬ HasMonotoneAPNot4 f 4` from `Erdos195Depth2.main_result_list` by term-mode unfolding. Its `#print axioms` lines report only `propext`, `Classical.choice` and `Quot.sound`. It is an audit file, not part of the formalization; unlike the files covered by the `grep` check above, it uses `decide` (in its non-vacuity example).
 
 ## Use of AI
 
