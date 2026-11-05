@@ -1,0 +1,159 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "A permutation of the integers with no monotone 4-term AP whose difference is not divisible by 4 (Erdős #195, partial)"
+  description: >-
+    Constructs an explicit bijection f : ℕ ≃ ℤ such that no indices i < j < k < l give an
+    arithmetic progression f i, f j, f k, f l, increasing or decreasing, whose common difference
+    is not divisible by 4 (that is, odd or congruent to 2 mod 4). The even numbers are listed in
+    stages about moving half-integer centres, each stage followed by one odd number, so that the
+    evens placed before each odd number are symmetric about it (this kills odd differences). The
+    odd numbers follow the published odd-difference order, and the evens follow a drifting-centre
+    key order with no odd-difference AP. This extends the odd-difference theorem of
+    Alex-lop/erdos-195-odd-difference. It is partial progress on Erdős Problem #195, which remains
+    open: it asks whether every permutation of ℤ contains a monotone 4-term arithmetic progression
+    of any difference, and progressions with difference divisible by 4 do occur in this
+    permutation.
+  authors:
+    - "Alex Lopez"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Alex Lopez"
+
+classification:
+  arxiv: ["math.CO", "math.NT"]
+  msc2020: ["11B25", "05A05"]
+
+sources:
+  - title: "A permutation of ℤ with no monotone 4-term AP whose difference is not divisible by 4 (docs/proof.md in this repository)"
+    type: original-proof
+    relationship: other
+    note: "The construction (reflection merge plus drifting-centre key order) and proof first presented here; found and written with Claude Opus 5.5 and Fable 5.1 (Anthropic)."
+  - title: "A permutation of ℤ with no monotone 4-term AP of odd common difference (docs/proof.md of Alex-lop/erdos-195-odd-difference)"
+    authors:
+      - "Alex Lopez"
+    id: "https://github.com/Alex-lop/erdos-195-odd-difference"
+    type: "formalization"
+    relationship: other
+    note: "Proves the odd-difference case. Its order P is used here for the odd numbers, and its Lean library is copied verbatim as Erdos195Depth2/OddOrder.lean."
+  - title: "Erdős Problem #195"
+    authors:
+      - "Thomas F. Bloom"
+    contributors:
+      - name: "Paul Erdős"
+        role: "problem-proposer"
+      - name: "Ronald Graham"
+        role: "problem-proposer"
+    id: "https://www.erdosproblems.com/195"
+    type: "web page"
+    relationship: background
+  - title: "On permutations avoiding arithmetic progressions"
+    authors:
+      - "Timothy D. LeSaulnier"
+      - "Sujith Vijay"
+    id: "arXiv:1004.1740"
+    type: "article"
+    location: "Discrete Mathematics 311 (2011), 205–207"
+    relationship: background
+    note: "Proves the odd-difference statement for permutations of ℕ."
+  - title: "Avoiding monotone arithmetic progressions in permutations of integers"
+    authors:
+      - "Sarosh Adenwalla"
+    id: "doi:10.1016/j.disc.2024.114183"
+    type: "article"
+    location: "Discrete Mathematics 347 (2024), 114183"
+    relationship: background
+  - title: "A 4AP-free permutation of the positive integers"
+    authors:
+      - "Boon Suan Ho"
+    id: "arXiv:2609.12780"
+    type: "preprint"
+    relationship: background
+  - title: "Avoiding four-term progressions from finitely many starts"
+    authors:
+      - "William Thompson"
+    id: "arXiv:2609.13350"
+    type: "preprint"
+    relationship: background
+
+related_formalizations:
+  - id: "https://github.com/Alex-lop/erdos-195-odd-difference"
+    relationship: builds-on
+    note: "Odd-difference case. Its Erdos195Odd/Basic.lean (the order P and the theorem that P has no monotone 4-term AP of odd difference) is copied verbatim as Erdos195Depth2/OddOrder.lean and used for the odd numbers."
+  - id: "https://github.com/google-deepmind/formal-conjectures/blob/a64e959c32c270df4dd0d96d2027481f15750534/FormalConjectures/ErdosProblems/195.lean"
+    relationship: other
+    note: "Statement of Erdős #195; Erdos195Depth2.main_result_list mirrors its HasMonotoneAP predicate restricted to common differences not divisible by 4."
+
+status:
+  scope: >-
+    Fully formalizes the theorem that some permutation of ℤ has no monotone 4-term arithmetic
+    progression whose common difference is not divisible by 4, in two equivalent phrasings. It
+    does not treat differences divisible by 4, which do occur in this permutation, and it does
+    not resolve Erdős #195. The remarks in docs/proof.md on the sharpness of the margin constant
+    1/7, on other parameter choices and on why the method stops at differences divisible by 4
+    are not formalized.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+
+automation:
+  methods:
+    - method: "agent"
+      models: ["Claude Opus 5.5 (claude-opus-5-5)", "Fable 5.1"]
+      framework: "Claude Code"
+      tool_setup: >-
+        Claude Code agents in an unattended research run on open Erdős problems: an orchestrating
+        workflow, research subagents that searched for constructions with Python and C, three
+        adversarial referee subagents (proof, computation, scope) that checked the informal
+        argument with independent code, and a formalization subagent. On the orchestrating
+        agent's suggestion (any C >= 1352 in T_k = C·2^k removes the finite computer check of
+        the informal proof), the formalization subagent used T_k = 2048·2^k and wrote the Lean proof, iterating with the Lean compiler (omega for
+        the case analyses, nlinarith and linarith for the rank arithmetic).
+      cost:
+        wall_time: "about 2 hours for the research round, the referee round and the formalization"
+        spend_usd: "subscription-based"
+        hardware: "local machine"
+      prompting_notes: >-
+        The user asked Claude to find and fully solve an open Erdős problem, formalize it in Lean
+        and publish it, falling back to rigorous partial results labelled as partial when no full
+        solution survives verification. No full solution was found. An earlier round had named
+        differences not divisible by 4 as the next step after the odd-difference result. The
+        workflow prompts required honest labelling, independent verification, and Lean proofs
+        without sorry, native_decide or new axioms.
+  spend_usd: "subscription-based"
+  notes: >-
+    The mathematics, the write-up and the Lean code were produced by Claude Opus 5.5 and Fable 5.1
+    (Anthropic) in Claude Code under the direction of Alex Lopez. The informal argument was checked
+    by three adversarial AI referees; the formal proof is checked by the Lean kernel. No human has
+    refereed the work.
+
+fidelity:
+  divergences: "none known"
+
+review:
+  status: "self-assessed"
+  reviewers:
+    - "none"
+  notes: >-
+    The statements in Challenge.lean and Solution.lean were checked to elaborate to byte-identical
+    terms (pp.all), and #print axioms reports only propext, Classical.choice and Quot.sound for both
+    theorems. The informal proof (with threshold 100·2^k and a finite check) was checked by three
+    adversarial AI referees, and the construction was checked numerically on windows of integers.
+    The informal proof has not been refereed by a human.
+
+alignment:
+  namespace: "Erdos195Depth2"
+  statements:
+    - source: "docs/proof.md, Theorem 1"
+      lean: "Erdos195Depth2.main_result"
+      module: "Challenge"
+      status: "proved"
+      note: "Indices i < j < k < l and values a, a + d, a + 2d, a + 3d with ¬ 4 ∣ d; a negative d covers decreasing progressions."
+    - source: "docs/proof.md, Theorem 1 (formal-conjectures phrasing)"
+      lean: "Erdos195Depth2.main_result_list"
+      module: "Challenge"
+      status: "proved"
+      note: "Same theorem phrased like HasMonotoneAP f 4 from formal-conjectures, restricted to common differences not divisible by 4."
+
+acknowledgements: "Lean 4 and Mathlib; the formal-conjectures project for the statement of Erdős #195; the Palomar template for the repository layout; the published odd-difference repository for the order P."
